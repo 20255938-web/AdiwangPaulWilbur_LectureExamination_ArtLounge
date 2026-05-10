@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorials - Art Lounge</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+/* ── BASE ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #0f0f0f;
+  color: #f0ebe3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  animation: none;
+}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 36px;
+  background: rgba(15,15,15,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.brand h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #f0ebe3;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Search */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #f0ebe3;
+  border: 1.5px solid #e0d9d0;
+  border-radius: 24px;
+  overflow: hidden;
+  flex: 1;
+  max-width: 480px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-bar:focus-within {
+  border-color: #10162a;
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.08);
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #111;
+  outline: none;
+  min-width: 0;
+}
+
+.search-bar input::placeholder { color: #999; }
+
+.search-bar button {
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: #999;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: color 0.2s;
+}
+
+.search-bar button:hover {
+  color: #111;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.search-bar {
+  position: relative;
+}
+
+/* Nav */
+nav { margin-left: auto; }
+
+nav ul { list-style: none; display: flex; gap: 4px; }
+
+nav a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(240,235,227,0.5);
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 24px;
+  transition: color 0.2s, background 0.2s;
+}
+
+nav a:hover { color: #f0ebe3; background: rgba(255,255,255,0.07); }
+nav a.active { color: #f0ebe3; background: rgba(255,255,255,0.1); }
+
+/* Hamburger */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: auto;
+  border-radius: 8px;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #f0ebe3;
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── HERO BANNER ────────────────────────────────────────────── */
+.tutorials-hero {
+  position: relative;
+  padding: 72px 36px 56px;
+  overflow: hidden;
+}
+
+.tutorials-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 20% 50%, rgba(201,169,110,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  opacity: 0;
+  animation: revealUp 0.6s ease 0.1s forwards;
+}
+
+.hero-label::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: #000;
+}
+
+.tutorials-hero h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #000;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: revealUp 0.7s ease 0.2s forwards;
+}
+
+.tutorials-hero h1 em {
+  font-style: italic;
+  color: #c9a96e;
+}
+
+.tutorials-hero p {
+  font-size: 1rem;
+  font-weight: 300;
+  color: #000;
+  max-width: 480px;
+  line-height: 1.7;
+  opacity: 0;
+  animation: revealUp 0.7s ease 0.32s forwards;
+}
+
+/* Divider line */
+.hero-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201,169,110,0.4) 0%, rgba(255,255,255,0.05) 60%, transparent 100%);
+  margin: 0 36px;
+}
+
+/* ── FILTER BAR ─────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 36px;
+  flex-wrap: wrap;
+}
+
+.filter-link {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 24px !important;
+  padding: 7px 18px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  color: #000 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  transform: none !important;
+  box-shadow: none !important;
+  letter-spacing: 0.04em;
+}
+
+.filter-link:hover {
+  background: rgba(255,255,255,0.09) !important;
+  color: #000 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.filter-link.active {
+  background: #c9a96e !important;
+  border-color: #c9a96e !important;
+  color: #0a0a0a !important;
+  font-weight: 600 !important;
+}
+
+/* ── TUTORIALS GRID ─────────────────────────────────────────── */
+.tutorials-grid {
+  column-count: 4;
+  column-gap: 14px;
+  padding: 0 36px 60px;
+  /* reset conflicting styles */
+  display: block;
+}
+
+/* ── TUTORIAL CARD ──────────────────────────────────────────── */
+.tutorial-card {
+  position: relative;
+  break-inside: avoid;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #1a1a1a;
+  /* reset conflicting horizontal-card styles */
+  display: block !important;
+  gap: unset !important;
+  padding: 0 !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  animation: revealUp 0.6s ease forwards;
+}
+
+/* Stagger each card */
+.tutorial-card:nth-child(1)  { animation-delay: 0.05s; }
+.tutorial-card:nth-child(2)  { animation-delay: 0.10s; }
+.tutorial-card:nth-child(3)  { animation-delay: 0.15s; }
+.tutorial-card:nth-child(4)  { animation-delay: 0.20s; }
+.tutorial-card:nth-child(5)  { animation-delay: 0.25s; }
+.tutorial-card:nth-child(6)  { animation-delay: 0.30s; }
+.tutorial-card:nth-child(7)  { animation-delay: 0.35s; }
+.tutorial-card:nth-child(8)  { animation-delay: 0.40s; }
+
+.tutorial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+
+/* Thumbnail */
+.thumbnail-container {
+  position: relative;
+  width: 100% !important;
+  flex-shrink: unset;
+  overflow: hidden;
+}
+
+.tutorial-card img,
+.thumbnail-container img {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  border-radius: 0;
+  object-fit: cover;
+  transition: transform 0.4s ease, filter 0.3s ease;
+  /* remove fixed heights */
+  max-height: none;
+}
+
+.tutorial-card.tall img,
+.tutorial-card.tall .thumbnail-container img {
+  height: 320px !important;
+  object-fit: cover;
+}
+
+.tutorial-card:not(.tall) img,
+.tutorial-card:not(.tall) .thumbnail-container img {
+  height: 200px !important;
+  object-fit: cover;
+}
+
+.tutorial-card:hover img { transform: scale(1.06); filter: brightness(0.75); }
+
+/* Golden shimmer on hover */
+.tutorial-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,169,110,0.15) 0%, transparent 60%);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.3s;
+  border-radius: 14px;
+}
+
+.tutorial-card:hover::before { opacity: 1; }
+
+/* Play button */
+.play-btn {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.8) !important;
+  width: 52px !important;
+  height: 52px !important;
+  background: rgba(201,169,110,0.9) !important;
+  color: #0a0a0a !important;
+  border-radius: 50% !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.1rem !important;
+  opacity: 0 !important;
+  z-index: 2;
+  box-shadow: 0 4px 20px rgba(201,169,110,0.4) !important;
+  transition: opacity 0.25s, transform 0.25s !important;
+  pointer-events: none;
+}
+
+.tutorial-card:hover .play-btn {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+/* Duration badge */
+.duration-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.75);
+  color: #f0ebe3;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+/* Info area */
+.tutorial-info {
+  position: relative;
+  padding: 14px 16px 16px;
+  background: #1a1a1a;
+  /* override gradient overlay from old css */
+  background: #1a1a1a !important;
+  border-radius: 0 0 14px 14px;
+}
+
+.tutorial-info h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #f0ebe3;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  /* not white over transparent anymore */
+  text-shadow: none;
+}
+
+.tutorial-info .tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c9a96e;
+  background: rgba(201,169,110,0.1);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ── NO RESULTS ─────────────────────────────────────────────── */
+#no-results {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 12px;
+  color: rgba(240,235,227,0.4);
+  font-size: 0.95rem;
+}
+#no-results.visible { display: flex; }
+#no-results .nr-icon { font-size: 2.5rem; }
+
+/* ── VIDEO MODAL ────────────────────────────────────────────── */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+.video-modal.open { display: flex; }
+
+.video-content {
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 820px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+  animation: slideUp 0.25s ease;
+}
+
+.video-content iframe {
+  width: 100%;
+  height: 460px;
+  display: block;
+  border: none;
+  border-radius: 0;
+}
+
+.video-meta {
+  padding: 18px 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#videoTitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #f0ebe3;
+}
+
+#youtubeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ff0000;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 24px;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+#youtubeLink:hover { background: #cc0000; }
+
+/* Close */
+.close-btn {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 10;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,0.1) !important;
+  border: none !important;
+  color: #f0ebe3 !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: background 0.2s !important;
+}
+
+.close-btn:hover { background: rgba(255,255,255,0.18) !important; transform: none !important; }
+
+/* ── SEARCH STATUS ──────────────────────────────────────────── */
+#search-status {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 36px;
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.98);
+  color: #111;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+#search-status.visible { display: flex; }
+
+#clear-search {
+  background: none !important;
+  border: 1px solid rgba(0,0,0,0.14) !important;
+  border-radius: 20px !important;
+  padding: 3px 12px !important;
+  font-size: 0.75rem !important;
+  color: #111 !important;
+  cursor: pointer !important;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s, color 0.2s !important;
+}
+
+#clear-search:hover {
+  border-color: #111 !important;
+  color: #111 !important;
+  transform: none !important;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+footer {
+  background: #0a0a0a;
+  color: rgba(240,235,227,0.25);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  text-align: center;
+  padding: 20px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  margin-top: auto;
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────────── */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .tutorials-grid { column-count: 3; }
+}
+
+@media (max-width: 768px) {
+  header { padding: 0 16px; }
+
+  .nav-toggle { display: flex; }
+
+  nav {
+    display: none;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: rgba(10,10,10,0.97);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 12px 16px;
+    backdrop-filter: blur(16px);
+  }
+
+  nav ul { flex-direction: column; gap: 4px; }
+  nav a  { display: block; padding: 11px 16px; border-radius: 10px; }
+
+  header.nav-open nav { display: block; }
+
+  .tutorials-hero  { padding: 48px 20px 36px; }
+  .hero-divider    { margin: 0 20px; }
+  .filter-bar      { padding: 16px 20px; }
+  .tutorials-grid  { column-count: 2; padding: 0 20px 48px; }
+
+  .video-content iframe { height: 240px; }
+  .video-meta           { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .tutorials-grid { column-count: 1; }
+}
+</style>
+</head>
+
+<body class="tutorials">
+
+<!-- ═══ HEADER ════════════════════════════════════════════════ -->
+<header id="site-header">
+
+  <div class="brand">
+    <img src="images/Sketches/Logo-Art.png" alt="Art Lounge Logo"
+         onerror="this.style.display='none'">
+    <h1>Art Lounge</h1>
+  </div>
+
+  <form class="search-bar" onsubmit="handleSearch(event)">
+    <input id="site-search" type="search" placeholder="Search tutorials…" autocomplete="off">
+    <button type="submit" aria-label="Search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+  </form>
+
+  <nav id="main-nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tutorials.html" class="active">Tutorials</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav(this)">
+    <span></span><span></span><span></span>
+  </button>
+
+</header>
+
+<!-- Search status -->
+<div id="search-status">
+  <span id="search-msg"></span>
+  <button id="clear-search" onclick="clearSearch()">✕ Clear</button>
+</div>
+
+<!-- ═══ HERO BANNER ═══════════════════════════════════════════ -->
+<section class="tutorials-hero">
+  <p class="hero-label">Art Lounge</p>
+  <h1>Learn Art,<br><em>Step by Step</em></h1>
+  <p>Explore curated video tutorials and sharpen your drawing skills — from basic sketches to advanced shading.</p>
+</section>
+
+<div class="hero-divider"></div>
+
+<!-- ═══ FILTER BAR ════════════════════════════════════════════ -->
+<div class="filter-bar">
+  <a href="tutorials.html" class="filter-link active">All</a>
+  <a href="basics.html" class="filter-link">Basics</a>
+  <a href="shading.html" class="filter-link">Shading</a>
+  <a href="faces.html" class="filter-link">Faces</a>
+  <a href="lineart.html" class="filter-link">Line Art</a>
+  <a href="advanced-detailing.html" class="filter-link">Advanced Detailing</a>
+</div>
+
+<!-- ═══ TUTORIALS GRID ════════════════════════════════════════ -->
+<main>
+<section class="tutorials-grid" id="tutorials-grid">
+
+  <!-- CARD 1 -->
+  <div class="tutorial-card" data-category="faces"
+       onclick="openVideo('eEC-My0HKro', 'How to Draw a Face')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail.jpg" alt="How to Draw a Face">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">12:34</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>How to Draw a Face</h3>
+      <span class="tag">Faces</span>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="tutorial-card tall" data-category="shading"
+       onclick="openVideo('XtZwCHmiC1k', 'Shading Basics')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail4.jpg" alt="Shading Basics">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">18:02</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Shading Basics</h3>
+      <span class="tag">Shading</span>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="tutorial-card" data-category="faces"
+       onclick="openVideo('U0OV3ucVYuM', 'Face Proportions')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail2.jpg" alt="Face Proportions">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">09:55</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Face Proportions</h3>
+      <span class="tag">Faces</span>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="tutorial-card tall" data-category="shading"
+       onclick="openVideo('zKboHeej6hk', 'Lighting Techniques')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail5.jpg" alt="Lighting Techniques">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">22:18</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Lighting Techniques</h3>
+      <span class="tag">Shading</span>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="tutorial-card" data-category="basics"
+       onclick="openVideo('wneb8vxVy6c', 'Sketch Practice')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail1.jpg" alt="Sketch Practice">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">14:40</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Sketch Practice</h3>
+      <span class="tag">Basics</span>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="tutorial-card tall" data-category="shading"
+       onclick="openVideo('6vapw6n6FyU', 'Advanced Shading')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail6.jpg" alt="Advanced Shading">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">27:05</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Advanced Shading</h3>
+      <span class="tag">Shading</span>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="tutorial-card" data-category="lineart"
+       onclick="openVideo('O61NED7VZIc', 'Line Art Basics')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail3.jpg" alt="Line Art Basics">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">11:22</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Line Art Basics</h3>
+      <span class="tag">Line Art</span>
+    </div>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="tutorial-card tall" data-category="basics"
+       onclick="openVideo('6vapw6n6FyU', 'Detailing Techniques')">
+    <div class="thumbnail-container">
+      <img src="images/Thumbnails/Thumbnail7.jpg" alt="Detailing Techniques">
+      <div class="play-btn">▶</div>
+      <span class="duration-badge">19:48</span>
+    </div>
+    <div class="tutorial-info">
+      <h3>Detailing Techniques</h3>
+      <span class="tag">Advanced Detailing</span>
+    </div>
+  </div>
+
+</section>
+
+<div id="no-results">
+  <div class="nr-icon">🎨</div>
+  <strong>No tutorials found</strong>
+  <span>Try a different search term</span>
+</div>
+
+</main>
+
+<!-- ═══ VIDEO MODAL ════════════════════════════════════════════ -->
+<div class="video-modal" id="videoModal">
+  <div class="video-content">
+
+    <button class="close-btn" onclick="closeVideo()" aria-label="Close">✕</button>
+
+    <iframe id="videoFrame" src="" allowfullscreen></iframe>
+
+    <div class="video-meta">
+      <h3 id="videoTitle"></h3>
+      <a id="youtubeLink" href="#" target="_blank" rel="noopener">
+        ▶ Watch on YouTube
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <p>&copy; 2026 Adiwang Paul Wilbur &mdash; Art Lounge</p>
+</footer>
+
+<!-- ═══ SCRIPT ════════════════════════════════════════════════ -->
+<script>
+
+/* ── Mobile nav ──────────────────────────────────────────── */
+const header = document.getElementById('site-header');
+
+function toggleNav(btn) {
+  const open = header.classList.toggle('nav-open');
+  btn.setAttribute('aria-expanded', open);
+}
+
+document.addEventListener('click', e => {
+  if (!header.contains(e.target) && header.classList.contains('nav-open')) {
+    header.classList.remove('nav-open');
+  }
+});
+
+/* ── Search ──────────────────────────────────────────────── */
+function handleSearch(e) {
+  e.preventDefault();
+  const query = document.getElementById('site-search').value.trim().toLowerCase();
+  if (!query) { clearSearch(); return; }
+
+  const cards = document.querySelectorAll('.tutorial-card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+    const tag   = card.querySelector('.tag')?.textContent.toLowerCase() || '';
+    const cat   = (card.dataset.category || '').toLowerCase();
+    const match = title.includes(query) || tag.includes(query) || cat.includes(query);
+    card.style.display = match ? 'block' : 'none';
+    if (match) visible++;
+  });
+
+  document.getElementById('search-msg').textContent =
+    visible === 0
+      ? 'No tutorials found. Try a different search term.'
+      : `${visible} result${visible !== 1 ? 's' : ''} for "${query}"`;
+  document.getElementById('search-status').classList.add('visible');
+  document.getElementById('no-results').classList.remove('visible');
+}
+
+function clearSearch() {
+  document.getElementById('site-search').value = '';
+  document.querySelectorAll('.tutorial-card').forEach(c => c.style.display = 'block');
+  document.getElementById('search-status').classList.remove('visible');
+  document.getElementById('no-results').classList.remove('visible');
+}
+
+/* ── Video modal ─────────────────────────────────────────── */
+function openVideo(id, title) {
+  document.getElementById('videoFrame').src  = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
+  document.getElementById('videoTitle').textContent = title;
+  document.getElementById('youtubeLink').href = 'https://www.youtube.com/watch?v=' + id;
+  document.getElementById('videoModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideo() {
+  document.getElementById('videoFrame').src = '';
+  document.getElementById('videoModal').classList.remove('open');
+  document.body.style.overflow = 'auto';
+}
+
+document.getElementById('videoModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('videoModal')) closeVideo();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeVideo();
+});
+
+</script>
+</body>
+</html>
+
+
+

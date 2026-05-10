@@ -1,0 +1,1257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery - Art Lounge</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET & VARIABLES ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f0ebe3;
+  --surface:   #ffffff;
+  --text:      #1a1a1a;
+  --muted:     #767676;
+  --accent:    #e60023;
+  --accent-h:  #ad081b;
+  --border:    #e0d9d0;
+  --radius:    16px;
+  --shadow:    0 4px 20px rgba(0,0,0,.10);
+  --shadow-h:  0 8px 30px rgba(0,0,0,.18);
+  --header-h:  64px;
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', sans-serif;
+  --col-min:   236px;
+}
+
+html {
+  scroll-behavior: smooth;
+  min-height: 100vh;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── HEADER ────────────────────────────────────────────────────── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.brand img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.brand h1 {
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Search */
+.search-bar {
+  flex: 1;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-bar:focus-within {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px rgba(26,26,26,.08);
+}
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: .9rem;
+  color: var(--text);
+  outline: none;
+  min-width: 0;
+}
+.search-bar input::placeholder { color: var(--muted); }
+.search-bar button {
+  background: none;
+  border: none;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  transform: none !important;
+  box-shadow: none !important;
+  transition: color .2s;
+}
+.search-bar button:hover {
+  color: var(--text);
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.search-bar { position: relative; }
+
+.search-suggestions {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 2px;
+  background: #ffffff;
+  border: 1px solid rgba(26,26,26,0.12);
+  border-radius: 0 0 24px 24px;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.search-suggestions.visible { display: block; }
+
+.suggestion-item {
+  padding: 12px 16px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: .9rem;
+  border-bottom: 1px solid rgba(26,26,26,0.06);
+  transition: background .2s, color .2s;
+}
+
+.suggestion-item:last-child { border-bottom: none; }
+
+.suggestion-item:hover { background: rgba(26,26,26,.06); color: var(--accent); }
+
+.suggestion-item.no-results {
+  cursor: default;
+  color: var(--muted);
+  background: transparent;
+}
+
+/* Nav */
+nav { margin-left: auto; }
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+}
+nav ul li a {
+  text-decoration: none;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 8px 14px;
+  border-radius: 24px;
+  transition: background .2s, color .2s;
+}
+nav ul li a:hover { background: var(--bg); color: var(--text); }
+nav ul li a.active {
+  background: var(--text);
+  color: #fff;
+}
+
+/* Hamburger */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin-left: auto;
+  border-radius: 8px;
+  transition: background .2s;
+}
+.nav-toggle:hover { background: var(--bg); }
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform .3s, opacity .3s;
+}
+
+/* Mobile nav open state */
+header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ─── SEARCH RESET BAR ──────────────────────────────────────────── */
+#search-status {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: #fff8e1;
+  border-bottom: 1px solid #ffe082;
+  font-size: .875rem;
+  color: #111;
+}
+#search-status.visible { display: flex; }
+#clear-search {
+  background: none;
+  border: 1px solid #795548;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .8rem;
+  color: #111;
+  cursor: pointer;
+  transition: background .2s;
+}
+#clear-search:hover { background: #ffe082; }
+
+/* ─── NO RESULTS ────────────────────────────────────────────────── */
+#no-results {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  gap: 12px;
+  color: var(--muted);
+  font-size: .95rem;
+}
+#no-results.visible { display: flex; }
+#no-results .nr-icon { font-size: 3rem; }
+
+/* ─── MASONRY GALLERY ───────────────────────────────────────────── */
+main {
+  flex: 1;
+  padding: 24px 16px 60px;
+}
+
+.gallery-grid {
+  columns: var(--col-min);
+  column-gap: 16px;
+}
+
+/* ─── PIN CARD ──────────────────────────────────────────────────── */
+.pin-card {
+  position: relative;
+  break-inside: avoid;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.pin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-h);
+}
+.pin-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius);
+  transition: filter .3s;
+}
+.pin-card:hover img { filter: brightness(.88); }
+
+/* Overlay */
+.pin-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, rgba(0,0,0,.35) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity .25s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px;
+}
+.pin-card:hover .pin-overlay { opacity: 1; }
+
+.overlay-top {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.overlay-top button {
+  background: rgba(255,255,255,.92);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, transform .2s;
+  color: var(--text);
+}
+.overlay-top button:hover { background: #fff; transform: scale(1.1); }
+
+.overlay-save {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  width: auto !important;
+  padding: 0 14px;
+  font-size: .82rem !important;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+.overlay-save:hover { background: var(--accent-h) !important; }
+
+.overlay-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-title-label {
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0,0,0,.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* ─── MODAL BACKDROP ────────────────────────────────────────────── */
+.pin-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn .2s ease;
+}
+.pin-modal.open { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ─── MODAL CONTAINER ───────────────────────────────────────────── */
+.pin-container {
+  position: relative;
+  background: var(--surface);
+  border-radius: 24px;
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.35);
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Close */
+.pin-close {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.9);
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  transition: background .2s, transform .2s;
+  color: var(--text);
+}
+.pin-close:hover { background: #fff; transform: scale(1.1); }
+
+/* Left: image */
+.pin-left {
+  flex: 1.1;
+  min-width: 0;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 24px 0 0 24px;
+}
+.pin-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-height: 90vh;
+  display: block;
+}
+
+/* Right: info */
+.pin-right {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px 20px 24px;
+}
+.pin-right::-webkit-scrollbar { width: 4px; }
+.pin-right::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Top icons row */
+.pin-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-top: 4px;
+}
+.pin-icons {
+  display: flex;
+  gap: 6px;
+}
+.pin-icons button {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: background .2s, border-color .2s;
+}
+.pin-icons button:hover { background: var(--bg); border-color: var(--text); }
+.pin-icons button.liked { color: var(--accent); border-color: var(--accent); }
+
+.pin-save-big {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 22px;
+  font-family: var(--font-body);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+}
+.pin-save-big:hover { background: var(--accent-h); transform: scale(1.04); }
+
+/* Modal title & desc */
+#pinTitle {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+#pinDescription {
+  font-size: .9rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+/* Tags */
+.pin-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.pin-tags span {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: .78rem;
+  color: var(--muted);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.pin-tags span:hover { background: var(--text); color: #fff; }
+
+/* More like this */
+.more-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.related-grid img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform .2s, opacity .2s;
+}
+.related-grid img:hover { transform: scale(1.05); opacity: .85; }
+
+/* ─── FOOTER ────────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: .82rem;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 768px) {
+  :root { --col-min: 180px; }
+
+  header { gap: 10px; }
+
+  .brand h1 { font-size: 1.1rem; }
+
+  /* Hide nav by default on mobile */
+  nav {
+    display: none;
+    position: absolute;
+    top: var(--header-h);
+    left: 0; right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    z-index: 800;
+  }
+  nav ul { flex-direction: column; gap: 4px; }
+  nav ul li a { display: block; padding: 10px 14px; border-radius: 10px; }
+
+  header.nav-open nav { display: block; }
+
+  .nav-toggle { display: flex; }
+
+  /* Compact search */
+  .search-bar { max-width: none; }
+
+  /* Modal: stack vertically */
+  .pin-container {
+    flex-direction: column;
+    max-height: 95vh;
+    border-radius: 20px;
+  }
+  .pin-left {
+    border-radius: 20px 20px 0 0;
+    max-height: 45vh;
+  }
+  .pin-right {
+    width: 100%;
+    padding: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  :root { --col-min: 150px; }
+
+  header { padding: 0 12px; }
+
+  .search-bar input { font-size: .82rem; padding: 8px 12px; }
+
+  main { padding: 16px 10px 50px; }
+
+  .gallery-grid { column-gap: 10px; }
+  .pin-card { margin-bottom: 10px; }
+
+  #pinTitle { font-size: 1.15rem; }
+
+  .related-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+
+  .pin-save-big { padding: 8px 16px; font-size: .82rem; }
+}
+
+/* Wide screens: more columns */
+@media (min-width: 1400px) {
+  :root { --col-min: 260px; }
+}
+@media (min-width: 1800px) {
+  :root { --col-min: 280px; }
+  .gallery-grid { max-width: 1800px; margin: 0 auto; }
+}
+
+/* ─── UTILITY ───────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+</style>
+</head>
+
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════ -->
+<header>
+
+  <div class="brand">
+    <img src="images/Sketches/Logo-Art.png" alt="Art Lounge Logo"
+         onerror="this.style.display='none'">
+    <h1>Art Lounge</h1>
+  </div>
+
+  <form class="search-bar" onsubmit="handleSearch(event)">
+    <input id="site-search" type="search" placeholder="Search artworks, tags…" autocomplete="off"
+           onfocus="showSuggestions()" oninput="filterSuggestions()">
+    <button type="submit" aria-label="Search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+    </button>
+    <div class="search-suggestions" id="search-suggestions"></div>
+  </form>
+
+  <nav id="main-nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="tutorials.html">Tutorials</a></li>
+      <li><a href="gallery.html" class="active">Gallery</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false"
+          onclick="toggleNav(this)">
+    <span></span><span></span><span></span>
+  </button>
+
+</header>
+
+<!-- Search status bar -->
+<div id="search-status">
+  <span id="search-msg"></span>
+  <button id="clear-search" onclick="clearSearch()">✕ Clear</button>
+</div>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════════════ -->
+<main>
+
+  <section class="gallery-grid" id="gallery-grid">
+
+    <!-- CARD 1 -->
+    <div class="pin-card"
+      data-title="Dark Anime Girl"
+      data-description="Black and white anime aesthetic artwork with bold contrast and expressive linework."
+      data-tags="#anime #blackwhite #manga #dark">
+      <img src="images/ArtWall/draw1.jpg" alt="Dark Anime Girl" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()" title="More options">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Dark Anime Girl</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 -->
+    <div class="pin-card"
+      data-title="Sketch Portrait"
+      data-description="Soft sketch portrait with a dreamy aesthetic style and delicate shading."
+      data-tags="#portrait #drawing #sketch">
+      <img src="images/ArtWall/draw2.jpeg" alt="Sketch Portrait" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Sketch Portrait</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 -->
+    <div class="pin-card"
+      data-title="Anime Eyes"
+      data-description="Detailed anime eye illustration showcasing intricate iris and highlight techniques."
+      data-tags="#anime #eyes #manga">
+      <img src="images/ArtWall/draw3.jpeg" alt="Anime Eyes" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Anime Eyes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4 -->
+    <div class="pin-card"
+      data-title="Manga Aesthetic"
+      data-description="Dark manga inspired artwork with moody tones and sharp panel-style composition."
+      data-tags="#dark #manga #anime">
+      <img src="images/ArtWall/draw4.jpeg" alt="Manga Aesthetic" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Manga Aesthetic</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 5 -->
+    <div class="pin-card"
+      data-title="Sketch Art"
+      data-description="Clean anime sketch illustration with confident, flowing line art."
+      data-tags="#sketch #art #anime">
+      <img src="images/ArtWall/draw5.jpeg" alt="Sketch Art" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Sketch Art</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 6 -->
+    <div class="pin-card"
+      data-title="Dark Character"
+      data-description="Anime black aesthetic portrait with strong silhouette and atmospheric depth."
+      data-tags="#dark #portrait #anime">
+      <img src="images/ArtWall/draw6.jpeg" alt="Dark Character" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Dark Character</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 7 -->
+    <div class="pin-card"
+      data-title="Manga Girl"
+      data-description="Black and white manga artwork with expressive facial features."
+      data-tags="#manga #girl #anime">
+      <img src="images/ArtWall/draw7.jpeg" alt="Manga Girl" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Manga Girl</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 8 -->
+    <div class="pin-card"
+      data-title="Anime Smile"
+      data-description="Soft anime aesthetic mood with a warm, inviting expression."
+      data-tags="#anime #aesthetic #dark">
+      <img src="images/ArtWall/draw8.jpeg" alt="Anime Smile" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Anime Smile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 9 -->
+    <div class="pin-card"
+      data-title="Mystic Portrait"
+      data-description="Enigmatic character with a mystical aura and layered symbolic detail."
+      data-tags="#mystic #portrait #anime">
+      <img src="images/ArtWall/draw9.jpg" alt="Mystic Portrait" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Mystic Portrait</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 10 -->
+    <div class="pin-card"
+      data-title="Fantasy Warrior"
+      data-description="Epic fantasy warrior illustration with dynamic pose and intricate armor."
+      data-tags="#fantasy #warrior #art">
+      <img src="images/ArtWall/draw10.jpg" alt="Fantasy Warrior" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Fantasy Warrior</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 11 -->
+    <div class="pin-card"
+      data-title="Digital Sketch"
+      data-description="Detailed digital sketch artwork blending traditional feel with digital precision."
+      data-tags="#digital #sketch #illustration">
+      <img src="images/ArtWall/draw11.jpg" alt="Digital Sketch" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Digital Sketch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 12 -->
+    <div class="pin-card"
+      data-title="Abstract Art"
+      data-description="Modern abstract art piece with bold shapes and layered textures."
+      data-tags="#abstract #modern #art">
+      <img src="images/ArtWall/draw12.png" alt="Abstract Art" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Abstract Art</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 13 -->
+    <div class="pin-card"
+      data-title="Character Design"
+      data-description="Unique character design concept with a distinctive silhouette and personality."
+      data-tags="#character #design #concept">
+      <img src="images/ArtWall/draw13.jpg" alt="Character Design" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Character Design</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 14 -->
+    <div class="pin-card"
+      data-title="Landscape Scene"
+      data-description="Serene landscape illustration evoking peace and natural beauty."
+      data-tags="#landscape #serene #nature">
+      <img src="images/ArtWall/draw14.jpg" alt="Landscape Scene" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Landscape Scene</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 15 -->
+    <div class="pin-card"
+      data-title="Comic Style"
+      data-description="Dynamic comic book style artwork with bold outlines and vivid action."
+      data-tags="#comic #dynamic #style">
+      <img src="images/ArtWall/draw15.jpg" alt="Comic Style" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Comic Style</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 16 -->
+    <div class="pin-card"
+      data-title="Own Drawing"
+      data-description="Dynamic comic book style artwork with bold outlines and vivid action."
+      data-tags="#comic #dynamic #style">
+      <img src="images/ArtWall/draw16.jpg" alt="Comic Style" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Comic Style</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 15 -->
+    <div class="pin-card"
+      data-title="Horror Drawing"
+      data-description="Dynamic comic book style artwork with bold outlines and vivid action."
+      data-tags="#comic #dynamic #style">
+      <img src="images/ArtWall/draw17.jpg" alt="Comic Style" loading="lazy">
+      <div class="pin-overlay">
+        <div class="overlay-top">
+          <button class="overlay-save" onclick="event.stopPropagation()">Save</button>
+          <button onclick="event.stopPropagation()">⋯</button>
+        </div>
+        <div class="overlay-bottom">
+          <span class="card-title-label">Horror Style</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- No results state -->
+  <div id="no-results">
+    <div class="nr-icon">🎨</div>
+    <strong>No artworks found</strong>
+    <span>Try a different search term or tag</span>
+  </div>
+
+</main>
+
+<!-- ═══ MODAL ═════════════════════════════════════════════════════ -->
+<div id="pinModal" class="pin-modal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+
+  <div class="pin-container">
+
+    <button class="pin-close" onclick="closePinModal()" aria-label="Close">&times;</button>
+
+    <!-- Left: artwork image -->
+    <div class="pin-left">
+      <img id="pinImage" src="" alt="Selected artwork">
+    </div>
+
+    <!-- Right: details -->
+    <div class="pin-right">
+
+      <div class="pin-top">
+        <div class="pin-icons">
+          <button id="likeBtn" title="Like" onclick="toggleLike(this)">♡</button>
+          <button title="Share">⤴</button>
+          <button title="More options">⋯</button>
+        </div>
+        <button class="pin-save-big">Save</button>
+      </div>
+
+      <h2 id="pinTitle">Artwork Title</h2>
+      <p id="pinDescription">Artwork description goes here.</p>
+      <div id="pinTags" class="pin-tags"></div>
+
+      <h3 class="more-title">More like this</h3>
+      <div class="related-grid" id="relatedGrid"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  <p>&copy; 2026 Adiwang Paul Wilbur &mdash; Art Lounge</p>
+</footer>
+
+<!-- ═══ JAVASCRIPT ════════════════════════════════════════════════ -->
+<script>
+
+/* ── Data: all card sources ──────────────────────────────── */
+const ALL_SRCS = [
+  'images/ArtWall/draw1.jpg',
+  'images/ArtWall/draw2.jpeg',
+  'images/ArtWall/draw3.jpeg',
+  'images/ArtWall/draw4.jpeg',
+  'images/ArtWall/draw5.jpeg',
+  'images/ArtWall/draw6.jpeg',
+  'images/ArtWall/draw7.jpeg',
+  'images/ArtWall/draw8.jpeg',
+  'images/ArtWall/draw9.jpg',
+  'images/ArtWall/draw10.jpg',
+  'images/ArtWall/draw11.jpg',
+  'images/ArtWall/draw12.png',
+  'images/ArtWall/draw13.jpg',
+  'images/ArtWall/draw14.jpg',
+  'images/ArtWall/draw15.jpg',
+  'images/ArtWall/draw16.jpg',
+  'images/ArtWall/draw17.jpg',
+
+];
+
+/* ── DOM refs ─────────────────────────────────────────────── */
+const modal        = document.getElementById('pinModal');
+const pinImage     = document.getElementById('pinImage');
+const pinTitle     = document.getElementById('pinTitle');
+const pinDesc      = document.getElementById('pinDescription');
+const pinTagsEl    = document.getElementById('pinTags');
+const relatedGrid  = document.getElementById('relatedGrid');
+const searchStatus = document.getElementById('search-status');
+const searchMsg    = document.getElementById('search-msg');
+const noResults    = document.getElementById('no-results');
+
+let currentSrc = '';
+
+/* ── Mobile nav toggle ───────────────────────────────────── */
+function toggleNav(btn) {
+  const header = document.querySelector('header');
+  const open   = header.classList.toggle('nav-open');
+  btn.setAttribute('aria-expanded', open);
+}
+
+/* ── Gallery card clicks ─────────────────────────────────── */
+document.querySelectorAll('.pin-card').forEach(card => {
+  card.addEventListener('click', () => openModal(card));
+});
+
+/* ── Open modal ──────────────────────────────────────────── */
+function openModal(card) {
+  const img = card.querySelector('img');
+  currentSrc = img.src;
+
+  pinImage.src = img.src;
+  pinImage.alt = img.alt;
+  pinTitle.textContent      = card.dataset.title;
+  pinDesc.textContent       = card.dataset.description;
+  pinTagsEl.innerHTML       = '';
+  document.getElementById('likeBtn').classList.remove('liked');
+
+  // Tags
+  card.dataset.tags.trim().split(/\s+/).forEach(tag => {
+    const s = document.createElement('span');
+    s.textContent = tag;
+    pinTagsEl.appendChild(s);
+  });
+
+  // Related images (all except current)
+  relatedGrid.innerHTML = '';
+  ALL_SRCS
+    .filter(src => !img.src.endsWith(src.split('/').pop()))
+    .slice(0, 12)
+    .forEach(src => {
+      const ri = document.createElement('img');
+      ri.src    = src;
+      ri.alt    = 'Related artwork';
+      ri.loading = 'lazy';
+      ri.addEventListener('click', () => swapRelated(ri, src));
+      relatedGrid.appendChild(ri);
+    });
+
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ── Swap to related image ───────────────────────────────── */
+function swapRelated(clickedImg, src) {
+  pinImage.src = src;
+
+  // Try to find matching card to update info
+  const cards = document.querySelectorAll('.pin-card');
+  const match  = Array.from(cards).find(c => {
+    const ci = c.querySelector('img');
+    return ci && ci.src.endsWith(src.split('/').pop());
+  });
+  if (match) {
+    pinTitle.textContent = match.dataset.title;
+    pinDesc.textContent  = match.dataset.description;
+    pinTagsEl.innerHTML  = '';
+    match.dataset.tags.trim().split(/\s+/).forEach(tag => {
+      const s = document.createElement('span');
+      s.textContent = tag;
+      pinTagsEl.appendChild(s);
+    });
+  }
+}
+
+/* ── Close modal ─────────────────────────────────────────── */
+function closePinModal() {
+  modal.classList.remove('open');
+  document.body.style.overflow = 'auto';
+}
+
+modal.addEventListener('click', e => {
+  if (e.target === modal) closePinModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePinModal();
+});
+
+/* ── Like toggle ─────────────────────────────────────────── */
+function toggleLike(btn) {
+  btn.classList.toggle('liked');
+  btn.textContent = btn.classList.contains('liked') ? '♥' : '♡';
+}
+
+/* ── Search ──────────────────────────────────────────────── */
+function handleSearch(event) {
+  event.preventDefault();
+
+  const query = document.getElementById('site-search').value.trim().toLowerCase();
+  if (!query) { clearSearch(); return; }
+
+  const cards = document.querySelectorAll('.pin-card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const title = card.dataset.title.toLowerCase();
+    const tags  = card.dataset.tags.toLowerCase();
+    const desc  = card.dataset.description.toLowerCase();
+    const match = title.includes(query) || tags.includes(query) || desc.includes(query);
+    card.style.display = match ? 'block' : 'none';
+    if (match) visible++;
+  });
+
+  searchMsg.textContent = `${visible} result${visible !== 1 ? 's' : ''} for "${query}"`;
+  searchStatus.classList.add('visible');
+  noResults.classList.toggle('visible', visible === 0);
+}
+
+/* ── Clear search ────────────────────────────────────────── */
+function clearSearch() {
+  document.getElementById('site-search').value = '';
+  document.querySelectorAll('.pin-card').forEach(c => c.style.display = 'block');
+  searchStatus.classList.remove('visible');
+  noResults.classList.remove('visible');
+  hideSuggestions();
+}
+
+/* ── Search suggestions ─────────────────────────────────── */
+const suggestionTags = ['#dark', '#portrait', '#anime', '#art', '#funny', '#B&W', '#Anime', '#Horror'];
+
+function showSuggestions() {
+  const suggestions = document.getElementById('search-suggestions');
+  suggestions.innerHTML = suggestionTags.slice(0, 5).map(tag =>
+    `<div class="suggestion-item" onclick="selectSuggestion('${tag}')">${tag}</div>`
+  ).join('');
+  suggestions.classList.add('visible');
+}
+
+function filterSuggestions() {
+  const query = document.getElementById('site-search').value.trim().toLowerCase();
+  const suggestions = document.getElementById('search-suggestions');
+  const filtered = query
+    ? suggestionTags.filter(tag => tag.toLowerCase().includes(query)).slice(0, 5)
+    : suggestionTags.slice(0, 5);
+
+  suggestions.innerHTML = filtered.length
+    ? filtered.map(tag => `<div class="suggestion-item" onclick="selectSuggestion('${tag}')">${tag}</div>`).join('')
+    : '<div class="suggestion-item no-results">No matching tags</div>';
+  suggestions.classList.add('visible');
+}
+
+function selectSuggestion(tag) {
+  const input = document.getElementById('site-search');
+  input.value = tag;
+  hideSuggestions();
+  handleSearch(new Event('submit', { bubbles: true, cancelable: true }));
+}
+
+function hideSuggestions() {
+  const suggestions = document.getElementById('search-suggestions');
+  suggestions.classList.remove('visible');
+}
+
+document.addEventListener('click', e => {
+  const searchBar = document.querySelector('.search-bar');
+  if (searchBar && !searchBar.contains(e.target)) {
+    hideSuggestions();
+  }
+});
+
+/* ── Close nav when clicking outside ────────────────────── */
+document.addEventListener('click', e => {
+  const header = document.querySelector('header');
+  if (!header.contains(e.target) && header.classList.contains('nav-open')) {
+    header.classList.remove('nav-open');
+    const btn = document.querySelector('.nav-toggle');
+    btn && btn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+</script>
+</body>
+</html>
+
+
+
+
